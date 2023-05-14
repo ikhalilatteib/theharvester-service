@@ -18,7 +18,6 @@ class TheharvesterServiceServiceProvider extends PackageServiceProvider
         $package
             ->name('theharvester-service')
             ->hasConfigFile()
-            ->hasViews()
             ->hasMigration('create_theharvester-service_table')
             ->hasCommand(TheharvesterServiceCommand::class);
     }
