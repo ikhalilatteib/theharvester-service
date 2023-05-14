@@ -2,9 +2,9 @@
 
 namespace Ikay\TheharvesterService;
 
+use Ikay\TheharvesterService\Commands\TheharvesterServiceCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Ikay\TheharvesterService\Commands\TheharvesterServiceCommand;
 
 class TheharvesterServiceServiceProvider extends PackageServiceProvider
 {

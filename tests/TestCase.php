@@ -2,9 +2,9 @@
 
 namespace Ikay\TheharvesterService\Tests;
 
+use Ikay\TheharvesterService\TheharvesterServiceServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Ikay\TheharvesterService\TheharvesterServiceServiceProvider;
 
 class TestCase extends Orchestra
 {
