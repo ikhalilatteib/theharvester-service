@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Ikay\TheharvesterService\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class TheharvesterServiceCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'theharvester-service';
 
     public $description = 'My command';
 

@@ -1,17 +1,17 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "ikay/theharvester-service",
+    "description": "This is my package theharvester-service",
     "keywords": [
-        ":vendor_name",
+        "ikay",
         "laravel",
-        ":package_slug"
+        "theharvester-service"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/ikay/theharvester-service",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "IBRAHIM KHALIL ATTEIB YACOUB",
+            "email": "i.khalilatteib@gmail.com",
             "role": "Developer"
         }
     ],
@@ -35,13 +35,13 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src/",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories/"
+            "Ikay\\TheharvesterService\\": "src/",
+            "Ikay\\TheharvesterService\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests/"
+            "Ikay\\TheharvesterService\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -61,10 +61,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "Ikay\\TheharvesterService\\TheharvesterServiceServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
+                "TheharvesterService": "Ikay\\TheharvesterService\\Facades\\TheharvesterService"
             }
         }
     },
