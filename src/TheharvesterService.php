@@ -11,13 +11,13 @@ use Illuminate\Support\Sleep;
 class TheharvesterService
 {
     protected $client;
-    
+
     private $logger;
-    
+
     public function __construct(public Theharvester $theharvester)
     {
         $this->logger = Log::channel('single');
-        
+
         try {
             $this->client = new Client([
                 'base_uri' => config('services.docker.endpoint'),
@@ -27,13 +27,13 @@ class TheharvesterService
             $this->saveEventualErrors($e);
             $this->logger->error($e->getMessage());
         }
-        
+
     }
-    
+
     protected function saveEventualErrors($e): void
     {
         $this->theharvester->update(['status' => 2]);
-        
+
         $this->theharvester->errorLogs()->create([
             'message' => $e->getMessage(),
             'code' => $e->getCode(),
@@ -42,11 +42,11 @@ class TheharvesterService
             'trace' => $e->getTraceAsString(),
         ]);
     }
-    
+
     public function createTheharvesterContainer()
     {
         $this->theharvester->containers()->delete();
-        
+
         try {
             for ($i = 0; $i < $this->theharvester->container; $i++) {
                 $response = $this->client->post('/containers/create', [
@@ -55,100 +55,100 @@ class TheharvesterService
                         'Cmd' => ['secsi/theharvester', '-d', $this->theharvester->domain, '-b', 'all'],
                     ],
                 ]);
-                
+
                 $container = json_decode((string) $response->getBody(), true);
-                
+
                 // Start the container
                 $this->logger->info('Started container with ID: '.$container['Id']);
                 $this->startContainer($container['Id']);
-                
+
                 Sleep::for(10)->seconds();
-                
+
                 $this->stopContainer($container['Id']);
-                
+
                 $operation_time = $this->containerRunTime($container['Id']);
-                
+
                 $logs = $this->getContainerLogs($container['Id']);
-                
+
                 $parsedLogs = $this->parseContainerLogs($logs);
-                
+
                 $this->storeContainerLogs($parsedLogs, $container['Id'], $operation_time);
             }
             $this->theharvester->update(['status' => 1]);
-            
+
             $this->logger->info('container is created');
         } catch (\Exception $e) {
             $this->saveEventualErrors($e);
             $this->logger->error($e->getMessage());
         }
     }
-    
+
     protected function startContainer(string $containerId)
     {
         try {
             if (empty($containerId)) {
                 throw new \InvalidArgumentException('Invalid container ID');
             }
-            
+
             $this->client->post('/containers/'.$containerId.'/start');
-            
+
         } catch (\Exception $e) {
             $this->saveEventualErrors($e, $this->theharvester);
             $this->logger->error($e->getMessage());
         }
     }
-    
+
     protected function stopContainer(string $containerId)
     {
         try {
             if (empty($containerId)) {
                 throw new \InvalidArgumentException('Invalid container ID');
             }
-            
+
             $this->client->post('/containers/'.$containerId.'/stop');
-            
+
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
         }
     }
-    
+
     protected function containerRunTime($containerID)
     {
         try {
             $response = $this->client->get('/containers/'.$containerID.'/json');
-            
+
             $container = json_decode((string) $response->getBody(), true);
-            
+
             $start = Carbon::create($container['State']['StartedAt']);
-            
+
             return Carbon::create($container['State']['FinishedAt'])->diffInSeconds($start);
         } catch (\Exception $e) {
             $this->saveEventualErrors($e, $this->theharvester);
             $this->logger->error($e->getMessage());
         }
     }
-    
+
     protected function getContainerLogs(string $containerId): string
     {
         try {
             // Stream the container logs (include both stdout and stderr)
             $response = $this->client->get('/containers/'.$containerId.'/logs?stdout=1&stderr=1&follow=1');
             $stream = $response->getBody();
-            
+
             // Read the logs until the stream is closed
             $logs = '';
             while (! $stream->eof()) {
                 $logs .= $stream->read(1024);
             }
-            
+
             return $logs;
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
-            
+
             return '';
         }
     }
-    
+
     protected function parseContainerLogs(string $log): array
     {
         // Initialize data array with default values
@@ -158,10 +158,10 @@ class TheharvesterService
             'host' => 0,
             'log' => $log,
         ];
-        
+
         // Define regular expression pattern to match IP, email, and host counts
         $pattern = '/\[\*\]\s*(IPs|Emails|Hosts) found:\s*(\d+)/i';
-        
+
         // Execute regular expression and update data array accordingly
         if (preg_match_all($pattern, $log, $matches)) {
             foreach ($matches[1] as $i => $type) {
@@ -179,22 +179,22 @@ class TheharvesterService
                 }
             }
         }
-        
+
         return $data;
     }
-    
+
     protected function storeContainerLogs(array $logs, string $containerId, $operation_time): void
     {
         try {
-            
+
             $logs['operation_time'] = $operation_time;
             $logs['container_id'] = $containerId;
             $this->theharvester->containers()->create($logs);
-            
+
         } catch (\Exception $e) {
             $this->saveEventualErrors($e, $this->theharvester);
             $this->logger->error($e->getMessage());
         }
-        
+
     }
 }
