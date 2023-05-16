@@ -11,21 +11,19 @@ return new class extends Migration
     {
         Schema::create('theharvesters', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+             $table->foreignIdFor(config('theharvester-service.model'))->constrained()->onDelete('cascade');
             $table->string('title');
             $table->text('description');
             $table->integer('container');
+            $table->string('domain');
             $table->tinyInteger('status')->default(0);
             $table->timestamps();
-            $table->foreign('user_id');
         });
 
         Schema::create('theharvester_containers', function (Blueprint $table) {
             $table->id();
             $table->string('container_id')->index();
             $table->foreignIdFor(Theharvester::class)->index()->constrained();
-            $table->string('domain');
-            $table->string('source');
             $table->integer('ip');
             $table->integer('email');
             $table->integer('host');
@@ -54,6 +52,6 @@ return new class extends Migration
     {
         Schema::dropIfExists('theharvester_eventual_errors');
         Schema::dropIfExists('theharvester_containers');
-        Schema::dropIfExists('theharvester_container');
+        Schema::dropIfExists('theharvesters');
     }
 };

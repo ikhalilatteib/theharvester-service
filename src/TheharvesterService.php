@@ -52,7 +52,7 @@ class TheharvesterService
                 $response = $this->client->post('/containers/create', [
                     'json' => [
                         'Image' => 'secsi/theharvester:latest',
-                        'Cmd' => ['secsi/theharvester', '-d', $this->theharvester->domain, '-b', 'all'],
+                        'Cmd' => ['-d', $this->theharvester->domain, '-b', 'all'],
                     ],
                 ]);
 
@@ -61,8 +61,7 @@ class TheharvesterService
                 // Start the container
                 $this->logger->info('Started container with ID: '.$container['Id']);
                 $this->startContainer($container['Id']);
-
-                Sleep::for(10)->seconds();
+                
 
                 $this->stopContainer($container['Id']);
 
@@ -105,7 +104,7 @@ class TheharvesterService
                 throw new \InvalidArgumentException('Invalid container ID');
             }
 
-            $this->client->post('/containers/'.$containerId.'/stop');
+            $this->client->post('/containers/'.$containerId.'/stop?t=60');
 
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
@@ -151,6 +150,7 @@ class TheharvesterService
 
     protected function parseContainerLogs(string $log): array
     {
+        $log = preg_replace("/[^[:alnum:][:space:][:punct:]]/", "", $log);
         // Initialize data array with default values
         $data = [
             'ip' => 0,

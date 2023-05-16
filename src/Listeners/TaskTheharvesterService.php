@@ -3,9 +3,11 @@
 namespace Ikay\TheharvesterService\Listeners;
 
 use Ikay\TheharvesterService\Events\TaskTheharvesterCreated;
+use Ikay\TheharvesterService\TheharvesterService;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Log;
 
-class TaskTheharvesterService implements ShouldQueue
+class TaskTheharvesterService
 {
     public $timeout = 300;
 
@@ -22,6 +24,7 @@ class TaskTheharvesterService implements ShouldQueue
      */
     public function handle(TaskTheharvesterCreated $event): void
     {
-
+        Log::info('it work');
+        (new TheharvesterService($event->theharvester))->createTheharvesterContainer();
     }
 }

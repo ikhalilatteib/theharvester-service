@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TheharvesterEventualError extends Model
 {
-    protected $table = 'theharvesters';
+    protected $table = 'theharvester_eventual_errors';
 
     protected $fillable = [
         'message',
