@@ -19,13 +19,10 @@ class TheharvesterServiceCommand extends Command
         $file = app_path('Providers/EventServiceProvider.php');
         $contents = file_get_contents($file);
 
-        if (! strpos($contents, 'use Ikay\TheharvesterService\Events\TaskTheharvesterCreated;')) {
-            $contents = str_replace('<?php', "<?php\n\nuse Ikay\TheharvesterService\Events\TaskTheharvesterCreated;", $contents);
-        }
-
-        if (! str_contains($contents, 'TaskTheharvesterCreated::class')) {
+    
+        if (! str_contains($contents, ' \Ikay\TheharvesterService\Events\TaskTheharvesterCreated::class')) {
             $search = 'protected $listen = [';
-            $replace = "$search\n        TaskTheharvesterCreated::class => [\n            TaskTheharvesterService::class,\n        ],";
+            $replace = "$search\n        \Ikay\TheharvesterService\Events\TaskTheharvesterCreated::class => [\n            \Ikay\TheharvesterService\Listeners\TaskTheharvesterService::class,\n        ],";
             $contents = str_replace($search, $replace, $contents);
         }
         file_put_contents($file, $contents);

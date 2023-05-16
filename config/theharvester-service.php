@@ -13,6 +13,6 @@ return [
     'dashboard' => '/',
     'log_model' => \App\Models\UserActivityLog::class,
 
-    'theharvester_route' => 'tasks.theharvesters.*',
-    'theharvester_index' => 'tasks.theharvesters.index',
+    'theharvester_route' => '/tasks/theharvesters/*',
+    'theharvester_index' => '/tasks/theharvesters',
 ];
