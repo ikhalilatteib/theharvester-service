@@ -4,7 +4,6 @@ namespace Ikay\TheharvesterService\Listeners;
 
 use Ikay\TheharvesterService\Events\TaskTheharvesterCreated;
 use Ikay\TheharvesterService\TheharvesterService;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 
 class TaskTheharvesterService

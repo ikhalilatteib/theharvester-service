@@ -3,14 +3,11 @@
 namespace Ikay\TheharvesterService;
 
 use Ikay\TheharvesterService\Commands\TheharvesterServiceCommand;
-use Ikay\TheharvesterService\Events\TaskTheharvesterCreated;
-use Ikay\TheharvesterService\Listeners\TaskTheharvesterService;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class TheharvesterServiceServiceProvider extends PackageServiceProvider
 {
-    
     public function configurePackage(Package $package): void
     {
         /*

@@ -9,11 +9,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Theharvester extends Model
 {
     protected $table = 'theharvesters';
-    
+
     protected $dispatchesEvents = [
-        'created' => TaskTheharvesterCreated::class
+        'created' => TaskTheharvesterCreated::class,
     ];
-    
+
     protected $fillable = [
         'user_id',
         'title',
@@ -32,7 +32,7 @@ class Theharvester extends Model
     {
         return $this->hasMany(TheharvesterEventualError::class);
     }
-    
+
     public function user()
     {
         return $this->belongsTo(config('theharvester-service.model'));

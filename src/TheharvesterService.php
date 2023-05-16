@@ -6,7 +6,6 @@ use GuzzleHttp\Client;
 use Ikay\TheharvesterService\Models\Theharvester;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Sleep;
 
 class TheharvesterService
 {
@@ -61,7 +60,6 @@ class TheharvesterService
                 // Start the container
                 $this->logger->info('Started container with ID: '.$container['Id']);
                 $this->startContainer($container['Id']);
-                
 
                 $this->stopContainer($container['Id']);
 
@@ -150,7 +148,7 @@ class TheharvesterService
 
     protected function parseContainerLogs(string $log): array
     {
-        $log = preg_replace("/[^[:alnum:][:space:][:punct:]]/", "", $log);
+        $log = preg_replace('/[^[:alnum:][:space:][:punct:]]/', '', $log);
         // Initialize data array with default values
         $data = [
             'ip' => 0,
