@@ -55,7 +55,7 @@ class TheharvesterService
                 $start = $i * $sourcesPerContainer;
                 $end = ($i + 1) * $sourcesPerContainer;
                 $sourcesChunk = array_slice($sources, $start, $end - $start);
-                
+
                 $response = $this->client->post('/containers/create', [
                     'json' => [
                         'Image' => 'secsi/theharvester:latest',
