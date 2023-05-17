@@ -49,18 +49,18 @@ class TheharvesterService
         try {
             $sources = config('theharvester-service.sources');
             $containerCount = $this->theharvester->container;
-            
+
             $sourcesPerContainer = ceil(count($sources) / $containerCount);
             $remainingSources = count($sources);
-            
+
             for ($i = 0; $i < $containerCount; $i++) {
                 $sourcesChunk = array_slice($sources, $i * $sourcesPerContainer, $sourcesPerContainer);
                 $remainingSources -= count($sourcesChunk);
-                
+
                 if ($remainingSources < $sourcesPerContainer) {
                     $sourcesChunk = array_slice($sources, $i * $sourcesPerContainer);
                 }
-                
+
                 $sourceCalled = implode(',', $sourcesChunk);
 
                 $response = $this->client->post('/containers/create', [
