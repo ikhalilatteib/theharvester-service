@@ -24,6 +24,7 @@ return new class extends Migration
             $table->id();
             $table->string('container_id')->index();
             $table->foreignIdFor(Theharvester::class)->index()->constrained();
+            $table->text('source');
             $table->integer('ip');
             $table->integer('email');
             $table->integer('host');

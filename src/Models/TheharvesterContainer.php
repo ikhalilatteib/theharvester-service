@@ -11,6 +11,7 @@ class TheharvesterContainer extends Model
     protected $fillable = [
         'container_id',
         'theharvester_id',
+        'source',
         'ip',
         'email',
         'host',
