@@ -49,20 +49,19 @@ class TheharvesterService
         try {
             $sources = config('theharvester-service.sources');
             $containerCount = $this->theharvester->container;
-            
+
             $sourcesChunks = array_chunk($sources, ceil(count($sources) / $containerCount));
-            
+
             foreach ($sourcesChunks as $sourcesChunk) {
                 $sourceNames = implode(', ', $sourcesChunk);
-                
+
                 $response = $this->client->post('/containers/create', [
                     'json' => [
                         'Image' => 'secsi/theharvester:latest',
                         'Cmd' => ['-d', $this->theharvester->domain, '-b', $sourceNames],
                     ],
                 ]);
-                
-                
+
                 $container = json_decode((string) $response->getBody(), true);
 
                 // Start the container
