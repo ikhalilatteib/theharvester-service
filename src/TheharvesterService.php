@@ -49,10 +49,16 @@ class TheharvesterService
         try {
             $sources = config('theharvester-service.sources');
             $containerCount = $this->theharvester->container;
-
-            $sourcesChunks = array_chunk($sources, ceil(count($sources) / $containerCount));
-
-            foreach ($sourcesChunks as $sourcesChunk) {
+            
+            $sourceCount = count($sources);
+            $sourcesPerContainer = ceil($sourceCount / $containerCount);
+            
+            $containerIndex = 0;
+            $remainingSources = $sourceCount;
+            
+            for ($i = 0; $i < $containerCount; $i++) {
+                $sourcesInContainer = min($sourcesPerContainer, $remainingSources);
+                $sourcesChunk = array_slice($sources, $containerIndex, $sourcesInContainer);
                 $sourceNames = implode(', ', $sourcesChunk);
 
                 $response = $this->client->post('/containers/create', [
@@ -77,6 +83,9 @@ class TheharvesterService
                 $parsedLogs = $this->parseContainerLogs($logs);
 
                 $this->storeContainerLogs($parsedLogs, $container['Id'], $operation_time, $sourceNames);
+                
+                $containerIndex += $sourcesInContainer;
+                $remainingSources -= $sourcesInContainer;
             }
             $this->theharvester->update(['status' => 1]);
 
