@@ -49,27 +49,20 @@ class TheharvesterService
         try {
             $sources = config('theharvester-service.sources');
             $containerCount = $this->theharvester->container;
-
-            $sourcesPerContainer = ceil(count($sources) / $containerCount);
-            $remainingSources = count($sources);
-
-            for ($i = 0; $i < $containerCount; $i++) {
-                $sourcesChunk = array_slice($sources, $i * $sourcesPerContainer, $sourcesPerContainer);
-                $remainingSources -= count($sourcesChunk);
-
-                if ($remainingSources < $sourcesPerContainer) {
-                    $sourcesChunk = array_slice($sources, $i * $sourcesPerContainer);
-                }
-
-                $sourceCalled = implode(',', $sourcesChunk);
-
+            
+            $sourcesChunks = array_chunk($sources, ceil(count($sources) / $containerCount));
+            
+            foreach ($sourcesChunks as $sourcesChunk) {
+                $sourceNames = implode(', ', $sourcesChunk);
+                
                 $response = $this->client->post('/containers/create', [
                     'json' => [
                         'Image' => 'secsi/theharvester:latest',
-                        'Cmd' => ['-d', $this->theharvester->domain, '-b', $sourceCalled],
+                        'Cmd' => ['-d', $this->theharvester->domain, '-b', $sourceNames],
                     ],
                 ]);
-
+                
+                
                 $container = json_decode((string) $response->getBody(), true);
 
                 // Start the container
@@ -84,7 +77,7 @@ class TheharvesterService
 
                 $parsedLogs = $this->parseContainerLogs($logs);
 
-                $this->storeContainerLogs($parsedLogs, $container['Id'], $operation_time, $sourceCalled);
+                $this->storeContainerLogs($parsedLogs, $container['Id'], $operation_time, $sourceNames);
             }
             $this->theharvester->update(['status' => 1]);
 
