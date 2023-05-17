@@ -47,11 +47,19 @@ class TheharvesterService
         $this->theharvester->containers()->delete();
 
         try {
-            for ($i = 0; $i < $this->theharvester->container; $i++) {
+            $sources = config('theharvester-service.sources');
+            $containerCount = $this->theharvester->container;
+            $sourcesPerContainer = ceil(count($sources) / $containerCount);
+
+            for ($i = 0; $i < $containerCount; $i++) {
+                $start = $i * $sourcesPerContainer;
+                $end = ($i + 1) * $sourcesPerContainer;
+                $sourcesChunk = array_slice($sources, $start, $sourcesPerContainer);
+
                 $response = $this->client->post('/containers/create', [
                     'json' => [
                         'Image' => 'secsi/theharvester:latest',
-                        'Cmd' => ['-d', $this->theharvester->domain, '-b', 'all'],
+                        'Cmd' => ['-d', $this->theharvester->domain, '-b', implode(',', $sourcesChunk)],
                     ],
                 ]);
 
