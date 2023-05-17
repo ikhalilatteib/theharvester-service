@@ -29,10 +29,7 @@ return [
         'qwant',
         'otx',
         'rapiddns',
-        'sublist3r',
-        'threatcrowd',
         'urlscan',
         'threatminer',
-        'omnisint'
     ],
 ];
