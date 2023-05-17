@@ -30,6 +30,6 @@ return [
         'otx',
         'rapiddns',
         'urlscan',
-        'threatminer',
+        'threatminer'
     ],
 ];
