@@ -33,6 +33,6 @@ return [
         'threatcrowd',
         'urlscan',
         'threatminer',
-        'omnisint'
+        'omnisint',
     ],
 ];
