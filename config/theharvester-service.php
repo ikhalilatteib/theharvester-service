@@ -25,7 +25,6 @@ return [
         'duckduckgo',
         'dnsdumpster',
         'hackertarget',
-        'crtsh',
         'qwant',
         'otx',
         'rapiddns',
