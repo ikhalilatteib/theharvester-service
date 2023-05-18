@@ -54,7 +54,6 @@
 								<tr>
 									<th>#</th>
 									<th>Konteyner ID</th>
-									<th>Sources</th>
 									<th>Hosts</th>
 									<th>IPs</th>
 									<th>Email</th>
@@ -68,11 +67,6 @@
 									<tr>
 										<td>{{ $loop->iteration }}</td>
 										<td>{{ Str::limit($container->container_id,20) }}</td>
-										<td>
-											@foreach(explode(',',$container->source) as $source)
-												<span class="badge badge-primary-inverse p-1">{{ucfirst($source)}}</span>
-											@endforeach
-										</td>
 										<td>{{ $container->host }}</td>
 										<td>{{ $container->ip }}</td>
 										<td>{{ $container->email }}</td>

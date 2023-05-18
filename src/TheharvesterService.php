@@ -47,24 +47,11 @@ class TheharvesterService
         $this->theharvester->containers()->delete();
 
         try {
-            $sources = config('theharvester-service.sources');
-            $containerCount = $this->theharvester->container;
-
-            $sourceCount = count($sources);
-            $sourcesPerContainer = ceil($sourceCount / $containerCount);
-
-            $containerIndex = 0;
-            $remainingSources = $sourceCount;
-
-            for ($i = 0; $i < $containerCount; $i++) {
-                $sourcesInContainer = min($sourcesPerContainer, $remainingSources);
-                $sourcesChunk = array_slice($sources, $containerIndex, $sourcesInContainer);
-                $sourceNames = implode(', ', $sourcesChunk);
-
+            for ($i = 0; $i < $this->theharvester->container; $i++) {
                 $response = $this->client->post('/containers/create', [
                     'json' => [
                         'Image' => 'secsi/theharvester:latest',
-                        'Cmd' => ['-d', $this->theharvester->domain, '-b', $sourceNames],
+                        'Cmd' => ['-d', $this->theharvester->domain, '-b', 'all'],
                     ],
                 ]);
 
@@ -82,10 +69,7 @@ class TheharvesterService
 
                 $parsedLogs = $this->parseContainerLogs($logs);
 
-                $this->storeContainerLogs($parsedLogs, $container['Id'], $operation_time, $sourceNames);
-
-                $containerIndex += $sourcesInContainer;
-                $remainingSources -= $sourcesInContainer;
+                $this->storeContainerLogs($parsedLogs, $container['Id'], $operation_time);
             }
             $this->theharvester->update(['status' => 1]);
 
@@ -197,13 +181,12 @@ class TheharvesterService
         return $data;
     }
 
-    protected function storeContainerLogs(array $logs, string $containerId, $operation_time, $sources): void
+    protected function storeContainerLogs(array $logs, string $containerId, $operation_time): void
     {
         try {
 
             $logs['operation_time'] = $operation_time;
             $logs['container_id'] = $containerId;
-            $logs['source'] = $sources;
             $this->theharvester->containers()->create($logs);
 
         } catch (\Exception $e) {
