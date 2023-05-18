@@ -2,6 +2,7 @@
 
 namespace Ikay\TheharvesterService\Commands;
 
+use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 
 class TheharvesterServiceCommand extends Command
@@ -12,10 +13,24 @@ class TheharvesterServiceCommand extends Command
 
     public function handle(): int
     {
+        
+        // pull secsi/theharvester:latest image
+        
+        $client = new Client([
+            'base_uri' => config('services.docker.endpoint'),
+                'timeout' => config('services.docker.timeout'),
+        ]);
+        $client->post('/images/create?fromImage=secsi/theharvester:latest');
+        $this->comment('secsi/theharvester:latest image has been pulled');
+        
         $this->callSilent('vendor:publish', ['--tag' => 'theharvester-service-config', '--force' => true]);
+        $this->comment('config/theharvester-service.php has been published');
         $this->callSilent('vendor:publish', ['--tag' => 'theharvester-service-migrations', '--force' => true]);
+        $this->comment('database/migrations/create_theharvester_service_table.php has been published');
         $this->callSilent('vendor:publish', ['--tag' => 'theharvester-service-views', '--force' => true]);
-
+        $this->comment('resources/views/vendor/theharvester has been published');
+        
+        
         $file = app_path('Providers/EventServiceProvider.php');
         $contents = file_get_contents($file);
 
@@ -26,7 +41,7 @@ class TheharvesterServiceCommand extends Command
         }
         file_put_contents($file, $contents);
 
-        $this->comment('All done');
+        $this->info('All done');
 
         return self::SUCCESS;
     }
