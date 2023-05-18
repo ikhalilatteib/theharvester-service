@@ -21,14 +21,14 @@ class TheharvesterServiceCommand extends Command
             'timeout' => config('services.docker.timeout'),
         ]);
         $client->post('/images/create?fromImage=secsi/theharvester:latest');
-        $this->comment('secsi/theharvester:latest image has been pulled');
+        $this->info('secsi/theharvester:latest image has been pulled');
 
         $this->callSilent('vendor:publish', ['--tag' => 'theharvester-service-config', '--force' => true]);
-        $this->comment('config/theharvester-service.php has been published');
+        $this->info('config/theharvester-service.php has been published');
         $this->callSilent('vendor:publish', ['--tag' => 'theharvester-service-migrations', '--force' => true]);
-        $this->comment('database/migrations/create_theharvester_service_table.php has been published');
+        $this->info('database/migrations/create_theharvester_service_table.php has been published');
         $this->callSilent('vendor:publish', ['--tag' => 'theharvester-service-views', '--force' => true]);
-        $this->comment('resources/views/vendor/theharvester has been published');
+        $this->info('resources/views/vendor/theharvester has been published');
 
         $file = app_path('Providers/EventServiceProvider.php');
         $contents = file_get_contents($file);
