@@ -16,5 +16,5 @@ return [
 
     'theharvester_route' => '/tasks/theharvesters/',
     'theharvester_index' => '/tasks/theharvesters',
-    
+
 ];
