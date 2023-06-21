@@ -64,13 +64,12 @@ class TheharvesterService
                 // Start the container
                 $this->logger->info('Started container with ID: '.$newContainer['Id']);
                 $this->startContainer($newContainer['Id']);
-                
-            }
-Sleep::for(90)->seconds();
 
-            foreach($containers as $container)
-                {
-                 $this->stopContainer($container['Id']);
+            }
+            Sleep::for(90)->seconds();
+
+            foreach ($containers as $container) {
+                $this->stopContainer($container['Id']);
 
                 $operation_time = $this->containerRunTime($container['Id']);
 
@@ -79,7 +78,7 @@ Sleep::for(90)->seconds();
                 $parsedLogs = $this->parseContainerLogs($logs);
 
                 $this->storeContainerLogs($parsedLogs, $container['Id'], $operation_time);
-                }
+            }
             $this->theharvester->update(['status' => 1]);
 
             $this->logger->info('container is created');
