@@ -102,7 +102,7 @@ class TheharvesterService
                 throw new \InvalidArgumentException('Invalid container ID');
             }
 
-            $this->client->post('/containers/'.$containerId.'/stop?t=60');
+            $this->client->post('/containers/'.$containerId.'/stop?t=90');
 
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
