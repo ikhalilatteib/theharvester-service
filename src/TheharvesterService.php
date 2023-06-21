@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use Ikay\TheharvesterService\Models\Theharvester;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Sleep;
 
 class TheharvesterService
 {
@@ -47,6 +48,7 @@ class TheharvesterService
         $this->theharvester->containers()->delete();
 
         try {
+            $containers = [];
             for ($i = 0; $i < $this->theharvester->container; $i++) {
                 $response = $this->client->post('/containers/create', [
                     'json' => [
@@ -55,13 +57,20 @@ class TheharvesterService
                     ],
                 ]);
 
-                $container = json_decode((string) $response->getBody(), true);
+                $newContainer = json_decode((string) $response->getBody(), true);
+
+                $containers[] = $newContainer;
 
                 // Start the container
-                $this->logger->info('Started container with ID: '.$container['Id']);
-                $this->startContainer($container['Id']);
+                $this->logger->info('Started container with ID: '.$newContainer['Id']);
+                $this->startContainer($newContainer['Id']);
+                
+            }
+Sleep::for(90)->seconds();
 
-                $this->stopContainer($container['Id']);
+            foreach($containers as $container)
+                {
+                 $this->stopContainer($container['Id']);
 
                 $operation_time = $this->containerRunTime($container['Id']);
 
@@ -70,7 +79,7 @@ class TheharvesterService
                 $parsedLogs = $this->parseContainerLogs($logs);
 
                 $this->storeContainerLogs($parsedLogs, $container['Id'], $operation_time);
-            }
+                }
             $this->theharvester->update(['status' => 1]);
 
             $this->logger->info('container is created');
